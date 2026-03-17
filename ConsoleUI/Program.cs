@@ -65,6 +65,7 @@ namespace ConsoleUI
             // Затримка консолі
             Console.WriteLine("\nНатисніть Enter, щоб вийти...");
             Console.ReadLine();
+            //вапрокерма
         }
     }
 }
