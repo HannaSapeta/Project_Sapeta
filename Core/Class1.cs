@@ -1,26 +1,60 @@
-﻿namespace Core
+﻿using System;
+
+namespace Core
 {
-    // Клас, що описує саме фото
+    // Пункт 2: Структура для ціни/вартості фото (наприклад, для фотостоку)
+    public struct PhotoPrice
+    {
+        public double Amount { get; set; }
+        public string Currency { get; set; }
+
+        public PhotoPrice(double amount, string currency)
+        {
+            Amount = amount;
+            Currency = currency;
+        }
+    }
+
     public class Photo
     {
-        public string FileName { get; set; }     // назва файлу
-        public double FileSizeMb { get; set; }   // розмір у МБ
-        public DateTime UploadDate { get; set; } // дата завантаження
+        public string FileName { get; set; }
+        public double FileSizeMb { get; set; }
+        public DateTime UploadDate { get; set; }
+
+        // Пункт 4: Конструктор
+        public Photo(string fileName, double fileSizeMb, DateTime uploadDate)
+        {
+            FileName = fileName;
+            FileSizeMb = fileSizeMb;
+            UploadDate = uploadDate;
+        }
     }
 
-    // Клас, що описує користувача системи
     public class User
     {
-        public string UserName { get; set; }     // ім'я
-        public int UploadLimit { get; set; }     // ліміт на кількість фото
-        public bool IsProAccount { get; set; }   // чи активована Pro-підписка
+        public string UserName { get; set; }
+        public int UploadLimit { get; set; }
+        public bool IsProAccount { get; set; }
+
+        public User(string userName, int uploadLimit, bool isProAccount)
+        {
+            UserName = userName;
+            UploadLimit = uploadLimit;
+            IsProAccount = isProAccount;
+        }
     }
 
-    // Клас для тегування зображень
     public class ImageTag
     {
-        public string TagName { get; set; }      // назва тегу (напр. "Природа")
-        public int UsageCount { get; set; }      // скільки разів використано
-        public bool IsHidden { get; set; }       // чи прихований тег
+        public string TagName { get; set; }
+        public int UsageCount { get; set; }
+        public bool IsHidden { get; set; }
+
+        public ImageTag(string tagName, int usageCount, bool isHidden)
+        {
+            TagName = tagName;
+            UsageCount = usageCount;
+            IsHidden = isHidden;
+        }
     }
 }
