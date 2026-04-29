@@ -2,7 +2,6 @@
 
 namespace Core
 {
-    // Пункт 2: Структура для ціни/вартості фото (наприклад, для фотостоку)
     public struct PhotoPrice
     {
         public double Amount { get; set; }
@@ -21,7 +20,6 @@ namespace Core
         public double FileSizeMb { get; set; }
         public DateTime UploadDate { get; set; }
 
-        // Пункт 4: Конструктор
         public Photo(string fileName, double fileSizeMb, DateTime uploadDate)
         {
             FileName = fileName;
@@ -55,6 +53,52 @@ namespace Core
             TagName = tagName;
             UsageCount = usageCount;
             IsHidden = isHidden;
+        }
+    }
+    public static class Extensions
+    {
+        public static string ToFriendlySize(this double sizeMb)
+        {
+            return $"{sizeMb:F2} MB";
+        }
+
+        public static int WordCount(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str)) return 0;
+            return str.Split(new[] { ' ', '_', '.' }, StringSplitOptions.RemoveEmptyEntries).Length;
+        }
+    }
+
+    public class PhotoStorage
+    {
+        private List<Photo> _photos = new List<Photo>();
+
+        private Dictionary<string, Photo> _photoCache = new Dictionary<string, Photo>();
+
+        public void AddPhoto(Photo photo)
+        {
+            _photos.Add(photo);
+            if (!_photoCache.ContainsKey(photo.FileName))
+                _photoCache.Add(photo.FileName, photo);
+        }
+
+        public IEnumerator<Photo> GetEnumerator()
+        {
+            foreach (var photo in _photos)
+            {
+                yield return photo;
+            }
+        }
+
+        public Photo FindByFileName(string fileName)
+        {
+            _photoCache.TryGetValue(fileName, out Photo result);
+            return result;
+        }
+
+        public List<Photo> GetLargePhotosFromCache(double minSize)
+        {
+            return _photoCache.Values.Where(p => p.FileSizeMb > minSize).ToList();
         }
     }
 }
