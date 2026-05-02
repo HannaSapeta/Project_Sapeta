@@ -1,41 +1,53 @@
 ﻿using System;
-using System.Text;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+using System.Linq;
 using Core;
 
-Console.OutputEncoding = Encoding.UTF8;
-
-PhotoStorage storage = new PhotoStorage();
-storage.AddPhoto(new Photo("vacation_2023.jpg", 4.5, DateTime.Now));
-storage.AddPhoto(new Photo("work_document.pdf", 1.2, DateTime.Now.AddDays(-1)));
-storage.AddPhoto(new Photo("family_tree.png", 8.9, DateTime.Now.AddDays(-5)));
-
-Console.WriteLine("=== 1. Ітерація через контейнер (yield return) ===");
-foreach (var photo in storage) 
+namespace ConsoleUI
 {
-    Console.WriteLine($"Файл: {photo.FileName}, Розмір: {photo.FileSizeMb.ToFriendlySize()}");
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            string jsonPath = "library.json";
+
+            List<Photo> photoLibrary = new List<Photo>
+            {
+                new Photo("carpathians.jpg", 5.2, "4000x3000"),
+                new Photo("sea_side.png", 12.8, "5000x4000")
+            };
+
+            // Серіалізація
+            string jsonString = JsonSerializer.Serialize(photoLibrary, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(jsonPath, jsonString);
+
+            // Десеріалізація з виправленням CS8600 та CS8602
+            if (File.Exists(jsonPath))
+            {
+                string rawJson = File.ReadAllText(jsonPath);
+
+                // Використовуємо '?' для допустимості null та перевірку
+                List<Photo>? restoredPhotos = JsonSerializer.Deserialize<List<Photo>>(rawJson);
+
+                Console.WriteLine("=== Список фото з файлу ===");
+                if (restoredPhotos != null) // Перевірка прибирає помилку CS8602
+                {
+                    foreach (var p in restoredPhotos)
+                    {
+                        // Перевірка кожного об'єкта
+                        if (p != null)
+                        {
+                            Console.WriteLine($"- {p.FileName} [{p.Resolution}]");
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine("\nНатисніть Enter для виходу...");
+            Console.ReadLine();
+        }
+    }
 }
-
-Console.WriteLine("\n=== 2. Швидкий пошук у Dictionary ===");
-string searchName = "family_tree.png";
-var found = storage.FindByFileName(searchName);
-Console.WriteLine(found != null ? $"Знайдено: {found.FileName}" : "Не знайдено");
-
-Console.WriteLine("\n=== 3. Робота з HashSet (Унікальність та Перетин) ===");
-HashSet<string> tagsUser1 = new HashSet<string> { "гори", "відпустка", "літо" };
-HashSet<string> tagsUser2 = new HashSet<string> { "море", "літо", "сонце" };
-
-bool added = tagsUser1.Add("гори");
-Console.WriteLine($"Спроба додати дублікат 'гори': {added} (колекція не змінилася)");
-
-HashSet<string> commonTags = new HashSet<string>(tagsUser1);
-commonTags.IntersectWith(tagsUser2);
-
-Console.WriteLine("Спільні теги для двох користувачів:");
-foreach (var tag in commonTags) Console.WriteLine($"- {tag}");
-
-Console.WriteLine("\n=== 4. Аналіз рядків (Методи розширення) ===");
-string testName = "my_new_photo_collection.jpg";
-Console.WriteLine($"Назва: {testName}");
-Console.WriteLine($"Кількість слів у назві: {testName.WordCount()}");
-
-Console.ReadLine();
