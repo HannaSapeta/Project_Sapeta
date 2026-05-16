@@ -4,4 +4,5 @@
   <Project Path="WinFormsUI/WinFormsUI.csproj" Id="7beae6b1-0556-4e6f-8ec4-a07c08e05f49">
     <BuildDependency Project="D:/A/Net/Lb1/Project_Sapeta/Core/Core.csproj" />
   </Project>
+  <Project Path="WpfUI/WpfUI.csproj" Id="f5d33cc3-00cc-458b-96b2-ecba56c2ac69" />
 </Solution>

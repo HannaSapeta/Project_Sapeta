@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Core
 {
@@ -34,13 +36,21 @@ namespace Core
     public class Photo : MediaFile
     {
         public string Resolution { get; set; } = string.Empty;
+        public string Text { get; }
 
         public Photo() : base() { }
 
-        public Photo(string fileName, double fileSizeMb, string resolution)
+        public Photo (string fileName, string name, double fileSizeMb, double size, string resolution, string text)
             : base(fileName, fileSizeMb)
         {
+            FileName = name;
+            FileSizeMb = size;
             Resolution = resolution;
+            Text = text;
+        }
+
+        public Photo (string fileName, double fileSizeMb, string text) : base(fileName, fileSizeMb)
+        {
         }
 
         public override void Process()
