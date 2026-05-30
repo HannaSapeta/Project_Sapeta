@@ -1,82 +1,82 @@
 ﻿<Window x:Class="WpfUI.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Media Manager"
-        Height="521"
-        Width="931">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:WpfUI.ViewModels"
+        mc:Ignorable="d"
+        Title="Менеджер медіафайлів"
+        Height="600"
+        Width="900"
+        WindowStartupLocation="CenterScreen">
 
-    <Window.Resources>
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
 
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="LightBlue"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="Padding" Value="10,5"/>
-        </Style>
+    <DockPanel Margin="10">
 
-    </Window.Resources>
+        <Border DockPanel.Dock="Top"
+                Background="#EAEAEA"
+                Padding="10"
+                Margin="0,0,0,10">
 
-    <Grid>
+            <StackPanel Orientation="Horizontal">
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+                <Button Content="➕ Додати фото"
+                        Width="140"
+                        Height="35"
+                        Margin="0,0,10,0"
+                        Command="{Binding AddCommand}" />
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+                <Button Content="🗑 Видалити"
+                        Width="120"
+                        Height="35"
+                        Command="{Binding DeleteCommand}" />
 
-        <!-- Заголовок -->
-        <TextBlock Grid.Row="0"
-                   Grid.ColumnSpan="2"
-                   Text="Менеджер медіафайлів"
-                   FontSize="24"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+            </StackPanel>
 
-        <!-- Бічна панель -->
-        <StackPanel Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="10">
+        </Border>
 
-            <Button Content="Додати"
-                    Click="Add_Click"/>
-
-            <Button Content="Редагувати"
-                    Click="Edit_Click"/>
-
-            <Button Content="Видалити"
-                    Click="Delete_Click"/>
-
-        </StackPanel>
-
-        <!-- Робоча область -->
-        <DataGrid x:Name="mediaGrid"
-                  Grid.Row="1"
-                  Grid.Column="1"
-                  Margin="10"
-                  AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding Photos}"
+                  SelectedItem="{Binding SelectedPhoto}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  GridLinesVisibility="Horizontal"
+                  x:Name="mediaGrid"
+                  SelectionMode="Single">
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Назва"
-                                    Binding="{Binding FileName}"
-                                    Width="*"/>
+                <DataGridTextColumn
+                    Header="Назва файлу"
+                    Binding="{Binding FileName}"
+                    Width="*" />
 
-                <DataGridTextColumn Header="Розмір"
-                                    Binding="{Binding FileSizeMb}"
-                                    Width="*"/>
+                <DataGridTextColumn
+                    Header="Розмір (MB)"
+                    Binding="{Binding FileSizeMb}"
+                    Width="150" />
 
-                <DataGridTextColumn Header="Роздільність"
-                                    Binding="{Binding Resolution}"
-                                    Width="*"/>
+                <DataGridTextColumn
+                    Header="Роздільна здатність"
+                    Binding="{Binding Resolution}"
+                    Width="200" />
 
             </DataGrid.Columns>
 
         </DataGrid>
 
-    </Grid>
+        <StatusBar DockPanel.Dock="Bottom">
+
+            <StatusBarItem>
+                <TextBlock Text="{Binding Photos.Count,
+                          StringFormat=Кількість фото: {0}}" />
+            </StatusBarItem>
+
+        </StatusBar>
+
+    </DockPanel>
 
 </Window>

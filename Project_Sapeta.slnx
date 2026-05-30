@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="D:/A/Net/Lb1/Project_Sapeta/ConsoleUI/ConsoleUI.csproj" />
   <Project Path="D:/A/Net/Lb1/Project_Sapeta/Core/Core.csproj" />
+  <Project Path="Tests/Tests.csproj" Id="5458190f-989d-48b9-8309-bd4e5419071b" />
   <Project Path="WinFormsUI/WinFormsUI.csproj" Id="7beae6b1-0556-4e6f-8ec4-a07c08e05f49">
     <BuildDependency Project="D:/A/Net/Lb1/Project_Sapeta/Core/Core.csproj" />
   </Project>
