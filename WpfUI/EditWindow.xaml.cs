@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Core;
 
 namespace WpfUI
@@ -10,12 +11,12 @@ namespace WpfUI
         public EditWindow()
         {
             InitializeComponent();
+            Photo = new Photo();
         }
 
         public EditWindow(Photo photo)
         {
             InitializeComponent();
-
             Photo = photo;
 
             txtName.Text = photo.FileName;
@@ -26,19 +27,15 @@ namespace WpfUI
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             if (Photo == null)
-            {
-                Photo = new Photo(
-                    txtName.Text,
-                    double.Parse(txtSize.Text),
-                    txtResolution.Text
-                );
-            }
-            else
-            {
-                Photo.FileName = txtName.Text;
-                Photo.Resolution = txtResolution.Text;
-                Photo.FileSizeMb = double.Parse(txtSize.Text);
-            }
+                Photo = new Photo();
+
+            Photo.FileName = txtName.Text;
+            Photo.Resolution = txtResolution.Text;
+
+            // ❗ FIX: int замість double
+            Photo.FileSizeMb = int.TryParse(txtSize.Text, out int size)
+                ? size
+                : 0;
 
             DialogResult = true;
             Close();

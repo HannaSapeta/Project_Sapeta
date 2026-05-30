@@ -2,40 +2,35 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Core;
+using Microsoft.Win32;
+using System.IO;
+using Photo = Core.Photo;
 
 namespace WpfUI.ViewModels
 {
-    public class RelayCommand : ICommand
-    {
-        private readonly Action execute;
-
-        public RelayCommand(Action execute)
+    
+        public class RelayCommand : ICommand
         {
-            this.execute = execute;
-        }
+            private readonly Action execute;
 
-        public event EventHandler? CanExecuteChanged;
+            public RelayCommand(Action execute)
+            {
+                this.execute = execute;
+            }
 
-        public bool CanExecute(object? parameter)
-        {
-            return true;
-        }
+            public event EventHandler? CanExecuteChanged;
 
-        public void Execute(object? parameter)
-        {
-            execute();
+            public bool CanExecute(object? parameter) => true;
+
+            public void Execute(object? parameter) => execute();
         }
-    }
+    
     public class MainViewModel : INotifyPropertyChanged
     {
         private Photo? selectedPhoto;
+        private readonly string filePath = "photos.json";
 
-        public ObservableCollection<Photo> Photos
-        {
-            get;
-            set;
-        }
+        public ObservableCollection<Photo> Photos { get; set; }
 
         public Photo? SelectedPhoto
         {
@@ -48,29 +43,37 @@ namespace WpfUI.ViewModels
         }
 
         public ICommand AddCommand { get; }
-
         public ICommand DeleteCommand { get; }
+        public ICommand SaveCommand { get; }
+        public ICommand LoadCommand { get; }
 
         public MainViewModel()
         {
             Photos = new ObservableCollection<Photo>();
 
-            AddCommand =
-                new RelayCommand(AddPhoto);
-
-            DeleteCommand =
-                new RelayCommand(DeletePhoto);
+            AddCommand = new RelayCommand(AddPhoto);
+            DeleteCommand = new RelayCommand(DeletePhoto);
+            SaveCommand = new RelayCommand(SaveToFile);
+            LoadCommand = new RelayCommand(LoadFromFile);
         }
-
-        private int counter = 1;
 
         private void AddPhoto()
         {
-            Photos.Add(
-                new Photo(
-                    $"Photo_{counter++}.jpg",
-                    5,
-                    "1920x1080"));
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Filter = "Images|*.jpg;*.png;*.jpeg"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                Photos.Add(new Photo
+                {
+                    FileName = Path.GetFileName(dialog.FileName),
+                    FullPath = dialog.FileName,
+                    FileSizeMb = 0,
+                    Resolution = "unknown"
+                });
+            }
         }
 
         private void DeletePhoto()
@@ -79,15 +82,30 @@ namespace WpfUI.ViewModels
                 Photos.Remove(SelectedPhoto);
         }
 
-        public event PropertyChangedEventHandler?
-            PropertyChanged;
-
-        protected void OnPropertyChanged(
-            [CallerMemberName] string property = "")
+        private void SaveToFile()
         {
-            PropertyChanged?.Invoke(
-                this,
-                new PropertyChangedEventArgs(property));
+            var json = System.Text.Json.JsonSerializer.Serialize(Photos);
+            File.WriteAllText(filePath, json);
+        }
+
+        private void LoadFromFile()
+        {
+            if (!File.Exists(filePath)) return;
+
+            var json = File.ReadAllText(filePath);
+            var items = System.Text.Json.JsonSerializer.Deserialize<ObservableCollection<Photo>>(json);
+
+            if (items != null)
+                Photos = items;
+
+            OnPropertyChanged(nameof(Photos));
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

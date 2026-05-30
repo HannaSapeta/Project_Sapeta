@@ -12,14 +12,11 @@ namespace Tests
         [TestMethod]
         public void CreatePhotoTest()
         {
-            Photo photo = new Photo(
-                "photo.jpg",
-                5,
-                "1920x1080");
+            Photo photo = new Photo();
 
-            Assert.AreEqual(
-                "photo.jpg",
-                photo.FileName);
+            photo.FileName = "photo.jpg";
+
+            Assert.AreEqual("photo.jpg", photo.FileName);
         }
 
         [TestMethod]
@@ -31,9 +28,7 @@ namespace Tests
 
             vm.AddCommand.Execute(null);
 
-            Assert.AreEqual(
-                count + 1,
-                vm.Photos.Count);
+            Assert.AreEqual(count + 1, vm.Photos.Count);
         }
 
         [TestMethod]
@@ -41,10 +36,12 @@ namespace Tests
         {
             MainViewModel vm = new MainViewModel();
 
-            Photo photo = new Photo(
-                "1.jpg",
-                2,
-                "800x600");
+            Photo photo = new Photo
+            {
+                FileName = "1.jpg",
+                FileSizeMb = 2,
+                Resolution = "800x600"
+            };
 
             vm.Photos.Add(photo);
 
@@ -52,9 +49,7 @@ namespace Tests
 
             vm.DeleteCommand.Execute(null);
 
-            Assert.AreEqual(
-                0,
-                vm.Photos.Count);
+            Assert.IsTrue(vm.Photos.Count == 0);
         }
 
         [TestMethod]
@@ -62,18 +57,16 @@ namespace Tests
         {
             List<Photo> photos = new List<Photo>
             {
-                new Photo("a", 1, "1"),
-                new Photo("b", 10, "1"),
-                new Photo("c", 15, "1")
+                new Photo { FileName = "a", FileSizeMb = 1 },
+                new Photo { FileName = "b", FileSizeMb = 10 },
+                new Photo { FileName = "c", FileSizeMb = 15 }
             };
 
             var result = photos
                 .Where(x => x.FileSizeMb > 5)
                 .ToList();
 
-            Assert.AreEqual(
-                2,
-                result.Count);
+            Assert.AreEqual(2, result.Count);
         }
 
         [TestMethod]
@@ -83,9 +76,7 @@ namespace Tests
 
             photo.FileName = "";
 
-            Assert.IsTrue(
-                string.IsNullOrWhiteSpace(
-                    photo.FileName));
+            Assert.IsTrue(string.IsNullOrWhiteSpace(photo.FileName));
         }
     }
 }

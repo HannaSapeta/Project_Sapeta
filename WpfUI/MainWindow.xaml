@@ -33,6 +33,15 @@
                         Width="120"
                         Height="35"
                         Command="{Binding DeleteCommand}" />
+                <Button Content="💾 Зберегти"
+        Width="120"
+        Margin="10,0,0,0"
+        Command="{Binding SaveCommand}" />
+
+                <Button Content="📂 Завантажити"
+        Width="120"
+        Margin="10,0,0,0"
+        Command="{Binding LoadCommand}" />
 
             </StackPanel>
 
@@ -49,20 +58,37 @@
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn
-                    Header="Назва файлу"
-                    Binding="{Binding FileName}"
-                    Width="*" />
+                <DataGridTemplateColumn Header="Фото" Width="100">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Image}"
+                       Width="80"
+                       Height="60"
+                       Stretch="UniformToFill"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Фото">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Image}"
+                   Width="80"
+                   Height="60"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                <DataGridTextColumn
-                    Header="Розмір (MB)"
-                    Binding="{Binding FileSizeMb}"
-                    Width="150" />
+                <DataGridTextColumn Header="Назва"
+                        Binding="{Binding FileName}"
+                        Width="*" />
 
-                <DataGridTextColumn
-                    Header="Роздільна здатність"
-                    Binding="{Binding Resolution}"
-                    Width="200" />
+                <DataGridTextColumn Header="Розмір"
+                        Binding="{Binding FileSizeMb}"
+                        Width="150" />
+
+                <DataGridTextColumn Header="Роздільна здатність"
+                        Binding="{Binding Resolution}"
+                        Width="200" />
 
             </DataGrid.Columns>
 

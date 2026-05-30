@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Xml.Linq;
 
+
 namespace Core
 {
     public interface IProcessable
@@ -33,57 +34,18 @@ namespace Core
         public abstract void Process();
     }
 
-    public class Photo : MediaFile
+    public class Photo
     {
+        public string FileName { get; set; } = string.Empty;
+        public int FileSizeMb { get; set; }
         public string Resolution { get; set; } = string.Empty;
-        public string Text { get; }
 
-        public Photo() : base() { }
-
-        public Photo (string fileName, string name, double fileSizeMb, double size, string resolution, string text)
-            : base(fileName, fileSizeMb)
-        {
-            FileName = name;
-            FileSizeMb = size;
-            Resolution = resolution;
-            Text = text;
-        }
-
-        public Photo (string fileName, double fileSizeMb, string text) : base(fileName, fileSizeMb)
-        {
-        }
-
-        public override void Process()
-        {
-            Console.WriteLine($"[Обробка Фото]: Зміна розміру {FileName}");
-        }
-
-        public override void DisplayInfo()
-        {
-            base.DisplayInfo();
-            Console.WriteLine($"Тип: Фото, Роздільна здатність: {Resolution}");
-        }
+        public string FullPath { get; set; } = string.Empty;
     }
 
-    public class Video : MediaFile
-    {
-        public int DurationSeconds { get; set; }
 
-        public Video() : base() { }
 
-        public Video(string fileName, double fileSizeMb, int duration)
-            : base(fileName, fileSizeMb)
-        {
-            DurationSeconds = duration;
-        }
-
-        public override void Process()
-        {
-            Console.WriteLine($"[Обробка Відео]: Рендеринг {FileName}");
-        }
-    }
-
-    public class LibraryConfig
+public class LibraryConfig
     {
         public string Version { get; set; } = "4.0.0-OOP";
     }
